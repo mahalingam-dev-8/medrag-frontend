@@ -5,6 +5,8 @@ async function handleResponse<T>(res: Response): Promise<T> {
     const text = await res.text().catch(() => 'Unknown error');
     throw new Error(`HTTP ${res.status}: ${text}`);
   }
+  // 204 / 205 carry no body — never attempt to parse
+  if (res.status === 204 || res.status === 205) return undefined as unknown as T;
   const ct = res.headers.get('content-type') ?? '';
   if (ct.includes('application/json')) return res.json() as Promise<T>;
   return undefined as unknown as T;
