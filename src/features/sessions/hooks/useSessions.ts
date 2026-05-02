@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { STORAGE_KEYS } from '@/config/constants';
 import { sessionsService } from '@/services';
 import type { Session } from '@/types';
@@ -17,20 +17,6 @@ function persist(sessions: Session[]): void {
 
 export function useSessions() {
   const [sessions, setSessions] = useState<Session[]>(load);
-
-  // On mount, fetch from the backend so history is restored after
-  // closing the tab, switching browsers, or clearing localStorage.
-  useEffect(() => {
-    sessionsService.list()
-      .then(fetched => {
-        const active = fetched.filter(s => s.is_active);
-        setSessions(active);
-        persist(active);
-      })
-      .catch(() => {
-        // Backend unreachable — keep showing whatever is in localStorage
-      });
-  }, []);
 
   const addSession = useCallback((session: Session) =>
     setSessions(prev => {
