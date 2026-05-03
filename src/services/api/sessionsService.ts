@@ -3,6 +3,9 @@ import { API_ROUTES } from '@/config/constants';
 import type { Session, SessionDetail } from '@/types';
 
 export const sessionsService = {
+  list: () =>
+    httpClient.get<Session[]>(API_ROUTES.SESSIONS),
+
   create: () =>
     httpClient.post<Session>(API_ROUTES.SESSIONS, { title: null }),
 
