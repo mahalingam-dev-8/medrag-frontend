@@ -1,73 +1,101 @@
-# React + TypeScript + Vite
+# MedRAG Assistant — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Tailwind CSS frontend for the MedRAG medical document assistant.
 
-Currently, two official plugins are available:
+**Backend repo:** [mahalingam-dev-8/medrag-backend](https://github.com/mahalingam-dev-8/medrag-backend)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Demo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+![MedRAG Assistant](https://github.com/user-attachments/assets/984d20c8-c6ae-42e3-8bfe-2650f2747326)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **React 19** + **TypeScript**
+- **Vite** — build tool and dev server
+- **React Router DOM v7** — client-side routing
+- **Tailwind CSS v4** + **shadcn/ui** — styling and components
+- **react-markdown** + **remark-gfm** — markdown rendering for assistant responses
+- **react-dropzone** — document upload
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Features
+
+- **Chat** — send questions and receive AI-generated answers with source citations
+- **Streaming** — typewriter effect for responses; SSE streaming via `/chat/stream/`
+- **Session history** — sidebar lists all sessions, loaded from the backend on startup
+- **Document management** — upload PDFs and delete ingested documents
+- **Persistent sessions** — session list synced with backend; localStorage used as fallback
+
+---
+
+## Project Structure
+
+```
+src/
+├── config/          # Environment variables and API route constants
+├── features/
+│   ├── chat/        # Chat UI components and useChat hook
+│   ├── documents/   # Document list, drop zone, useDocuments hook
+│   └── sessions/    # Sidebar, useSessions hook
+├── layouts/         # AppLayout (shared sidebar + outlet)
+├── pages/           # ChatPage, DocumentsPage
+├── services/api/    # httpClient, chatService, sessionsService, documentsService
+├── types/           # Shared TypeScript interfaces
+└── lib/             # Utility functions
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Getting Started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+
+- Node.js 18+
+- Backend running (see [medrag-backend](https://github.com/mahalingam-dev-8/medrag-backend))
+
+### Install and Run
+
+```bash
+npm install
+npm run dev
 ```
+
+The app runs at `http://localhost:5173` and expects the backend at `http://localhost:8000` by default.
+
+### Environment Variables
+
+Create a `.env` file at the project root:
+
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+For production, set `VITE_API_URL` to your deployed backend URL (e.g. `https://api-linga.onrender.com`).
+
+---
+
+## Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint |
+
+---
+
+## Deployment
+
+Deployed on **Vercel**. A `vercel.json` rewrite rule handles SPA routing:
+
+```json
+{ "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+```
+
+Set `VITE_API_URL` in Vercel project environment variables to point to the production backend.
