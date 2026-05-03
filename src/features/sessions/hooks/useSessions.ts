@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { STORAGE_KEYS } from '@/config/constants';
 import { sessionsService } from '@/services';
 import type { Session } from '@/types';
@@ -17,6 +17,16 @@ function persist(sessions: Session[]): void {
 
 export function useSessions() {
   const [sessions, setSessions] = useState<Session[]>(load);
+
+  useEffect(() => {
+    sessionsService.list()
+      .then(data => {
+        const active = data.filter(s => s.is_active);
+        setSessions(active);
+        persist(active);
+      })
+      .catch(() => {/* keep localStorage fallback */});
+  }, []);
 
   const addSession = useCallback((session: Session) =>
     setSessions(prev => {
