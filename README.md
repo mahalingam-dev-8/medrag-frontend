@@ -1,101 +1,49 @@
-# MedRAG Assistant — Frontend
+# MedRAG Assistant: Frontend
 
-React + TypeScript + Tailwind CSS frontend for the MedRAG medical document assistant.
+The React app for MedRAG, a medical document assistant that answers questions from uploaded PDFs and cites the source of every answer.
 
-**Backend repo:** [mahalingam-dev-8/medrag-backend](https://github.com/mahalingam-dev-8/medrag-backend)
+**[▶ Watch the demo](https://www.loom.com/share/ca3d9b4ca0e64aa39f77bb86b2a96ec6)** · **[Live app](https://medrag-frontend-lilac.vercel.app)** · **[Backend repo](https://github.com/mahalingam-dev-8/medrag-backend)**
 
----
-
-## Demo
-
-![MedRAG Assistant](https://github.com/user-attachments/assets/984d20c8-c6ae-42e3-8bfe-2650f2747326)
-
----
-
-## Tech Stack
-
-- **React 19** + **TypeScript**
-- **Vite** — build tool and dev server
-- **React Router DOM v7** — client-side routing
-- **Tailwind CSS v4** + **shadcn/ui** — styling and components
-- **react-markdown** + **remark-gfm** — markdown rendering for assistant responses
-- **react-dropzone** — document upload
-
----
+> The backend runs on a free instance. If it has been idle, the first request can take up to a minute.
 
 ## Features
 
-- **Chat** — send questions and receive AI-generated answers with source citations
-- **Streaming** — typewriter effect for responses; SSE streaming via `/chat/stream/`
-- **Session history** — sidebar lists all sessions, loaded from the backend on startup
-- **Document management** — upload PDFs and delete ingested documents
-- **Persistent sessions** — session list synced with backend; localStorage used as fallback
+- Ask a question and watch the answer stream in over SSE, with citations back to the source document and page.
+- Past chat sessions are listed in the sidebar and loaded from the backend, with localStorage as a fallback.
+- Upload PDFs by drag and drop, and delete documents you no longer need.
+- Answers are rendered as Markdown, so lists and tables from the model display properly.
 
----
+## Tech stack
 
-## Project Structure
+React 19 · TypeScript · Vite · React Router 7 · Tailwind CSS 4 · shadcn/ui · react-markdown · react-dropzone · Vercel
+
+## Project structure
 
 ```
 src/
-├── config/          # Environment variables and API route constants
+├── config/          # environment variables and API routes
 ├── features/
-│   ├── chat/        # Chat UI components and useChat hook
-│   ├── documents/   # Document list, drop zone, useDocuments hook
-│   └── sessions/    # Sidebar, useSessions hook
-├── layouts/         # AppLayout (shared sidebar + outlet)
+│   ├── chat/        # chat UI and the useChat hook
+│   ├── documents/   # document list, drop zone, useDocuments hook
+│   └── sessions/    # sidebar and the useSessions hook
+├── layouts/         # shared layout with the sidebar
 ├── pages/           # ChatPage, DocumentsPage
-├── services/api/    # httpClient, chatService, sessionsService, documentsService
-├── types/           # Shared TypeScript interfaces
-└── lib/             # Utility functions
+├── services/api/    # HTTP client and one service per resource
+├── types/           # shared TypeScript types
+└── lib/             # small utilities
 ```
 
----
+<details>
+<summary><b>Run locally</b></summary>
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- Backend running (see [medrag-backend](https://github.com/mahalingam-dev-8/medrag-backend))
-
-### Install and Run
+Needs Node.js 18+ and the [backend](https://github.com/mahalingam-dev-8/medrag-backend) running.
 
 ```bash
 npm install
-npm run dev
+echo "VITE_API_URL=http://localhost:8000" > .env
+npm run dev          # http://localhost:5173
 ```
 
-The app runs at `http://localhost:5173` and expects the backend at `http://localhost:8000` by default.
+In production, set `VITE_API_URL` in the Vercel project settings to the deployed backend. `vercel.json` rewrites every path to `index.html` so client-side routes work on refresh.
 
-### Environment Variables
-
-Create a `.env` file at the project root:
-
-```env
-VITE_API_URL=http://localhost:8000
-```
-
-For production, set `VITE_API_URL` to your deployed backend URL (e.g. `https://api-linga.onrender.com`).
-
----
-
-## Available Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Type-check and build for production |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run ESLint |
-
----
-
-## Deployment
-
-Deployed on **Vercel**. A `vercel.json` rewrite rule handles SPA routing:
-
-```json
-{ "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
-```
-
-Set `VITE_API_URL` in Vercel project environment variables to point to the production backend.
+</details>
